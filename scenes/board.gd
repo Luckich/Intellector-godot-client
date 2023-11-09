@@ -4,71 +4,51 @@ const hex_scene = preload("res://scenes/hex.tscn")
 const piece_scene = preload("res://scenes/piece.tscn")
 const label_scene = preload("res://scenes/label.tscn")
 
-var pos = "BHSFOFSHB-bhsfofshbU-U-U-U-U-u-u-u-u-u---------------------------------------------------------JGJEJEJGJ-jgjejejgjVQKQVvqkqv"#vgqikiqgv"
 const width = 1813
 const height = 1571
-	
 const scale_multiplayer = 0.4
-	
-const field_hex_count_x = 9 * 2 + 1
-const field_hex_count_y = 7
-
 var field = []
-var hexes = []
-
+var hexes_array = []
+#b → black чёрный
+#w → white белый
+#e → empty пустой гекс
+#t → transition переход на следующую линию
+var hex_string = 'btwwbtwbwwbtbwwbwwbtwwbwwbwwbtwbwwbwwbwwbtbwwbwwbwwbwwbteebwwbwwbwwbwwbteeeebwwbwwbwwbwwbteeeeeebwwbwwbwwbwwbteeeeeeeebwwbwwbwwbwteeeeeeeeeebwwbwwbwwteeeeeeeeeeeebwwbwwbteeeeeeeeeeeeeebwwbwteeeeeeeeeeeeeeeebwwteeeeeeeeeeeeeeeeeebt'
+var pos = "BUHS--UFO----UFS------UHBJ-------U-bVGJ-------uhsQEJ-------ufoKEJ-------ufsQGJ-------uhbV-j-------uvgj------qej----kej--qgjv"
 var figure_selected = -1 #-1 значит что никакая фигура не выбрана
 
+
+
 func _ready():
-
-	var index = -1
-	for y in range(field_hex_count_y):
-		for x in range(field_hex_count_x):
-			
-			if y == field_hex_count_y-1 and x%2 == 1:
-				continue
-				
-			index += 1
-			
-			var hex = hex_scene.instantiate()
-			var label = label_scene.instantiate()
-			
-			var shiftX = x * width * 0.75 * scale_multiplayer
-			var shiftY = y * height * scale_multiplayer
-			
-			if x % 2 == 1:
-				shiftY += height*scale_multiplayer/2
-			#print(x," ",  y)		
-			hex.scale.x = scale_multiplayer
-			hex.scale.y = scale_multiplayer
-			#print(" ", shiftX - 1300, " ", shiftY - 1300," ", x, " ", y)
-			hex.global_position.x = shiftX + 1000
-			hex.global_position.y = shiftY + 1000
-			
-			label.global_position.x = shiftX + 900
-			label.global_position.y = shiftY + 900
-			var coords = convert_coords(x, y)
-			label.text = str(coords[0]) + " " + str(coords[1])
-
-			
-			hex.set_meta("index", index)
-			
-			if (y%3 == x%2):
-				hex.animation = "black_idle"
-			else:
-				hex.animation = "white_idle"
-			
-			print(hex.position)
-			
-			hexes.append(hex)
-			
-			#print(len(hexes))
-			add_child(hex)
-			add_child(label)
+	var start_position_x = 600
+	var start_position_y = 1000
+	var shift_x = 0
+	var shift_y = 0
+	const hex_sprite_width = 1813 #Размеры исходной картинки гекса
+	const hex_sprite_height = 1571
+	const hex_width = hex_sprite_width * scale_multiplayer
+	const hex_height = hex_sprite_height * scale_multiplayer
+	for x in hex_string:
+		if x == 't':
+			start_position_y += hex_height
+			shift_y = 0
+			shift_x = 0
+		else:
+			shift_x += hex_width*0.75
+			shift_y += hex_height/2
+			if x == "e":
+				continue	
+			var new_hex = hex_scene.instantiate()
+			new_hex.position = Vector2(start_position_x+shift_x, start_position_y-shift_y)
+			if x == 'b':
+				new_hex.animation = 'black_idle'
+			elif x == 'w':
+				new_hex.animation = 'white_idle'	
+			hexes_array.append(new_hex)
+			add_child(new_hex)
 	draw_pos(pos)
 	#INIT FIELD
-	
-func convert_coords(x, y):
-	return [x, y+round((float(x)/2.0))]
+#
 var swap_figures = {"-":"EMPTY",
 					"a":"AB", "A":"AW","s":"AY","S":"AR","q":"AG","Q":"AP",
 					"d":"DB", "D":"DW","f":"DY","F":"DR","e":"DG","E":"DP",
@@ -76,127 +56,72 @@ var swap_figures = {"-":"EMPTY",
 					"l":"LB", "L":"LW","h":"LY","H":"LR","g":"LG","G":"LP",                                    
 					"m":"dB", "M":"dW","b":"dY","B":"dR","v":"dG","V":"dP",                                   
 					"p":"PB", "P":"PW","u":"PY","U":"PR","j":"PG","J":"PP"}                                     
-
-
-func draw_figure(x, y, figure):
+#
+#
+func draw_figure(figure, num):
 	var piece = piece_scene.instantiate()
-		
-	var shiftX = x * width * 0.75 * scale_multiplayer
-	var shiftY = y * height * scale_multiplayer
-			
-	if x % 2 == 1:
-		shiftY += height*scale_multiplayer/2
-			
 	piece.scale.x = scale_multiplayer*5
 	piece.scale.y = scale_multiplayer*5
-			
-	piece.position.x = shiftX + 1000
-	piece.position.y = shiftY + 1000
-		
+	piece.position.x = hexes_array[num].position.x
+	piece.position.y = hexes_array[num].position.y
 	piece.animation = swap_figures[figure]
-	#print(swap_figures[i])
-	
 	add_child(piece)
 	field.append(piece)	
-	
-func get_x_and_y_by_hex_index(index):
-	var x = index % field_hex_count_x
-	var y = index / field_hex_count_x
-		
-	var additional = 0
-	
-	if y == field_hex_count_y-1 and x%2 == 1:
-		index += 1
-		additional = 1
-		
-		x = index % field_hex_count_x
-		y = index / field_hex_count_x
-		
-	return [x, y, additional]
-	
-	
+
 func draw_pos(pos):
-	#for i in field:
-	#	remove_child(i)
 	var num = -1
-	
 	for figure in pos:
 		num += 1
-		
-		var data = get_x_and_y_by_hex_index(num)
-		num += data[2]
-		
-		draw_figure(data[0], data[1], figure)
-
-func remove_pos():
-	for figure in field:
-		remove_child(figure)
-	field = []
-	
+		draw_figure(figure, num)
+##
+#func remove_pos():
+#	for figure in field:
+#		remove_child(figure)
+#	field = []
+#
 var swap_hexes = {"white_idle"   : "white_active",
 				"white_active" : "white_idle",
 				"black_idle"   : "black_active",
 				"black_active" : "black_idle"}
-
+#
 func move_figure(from, to):
-	
-
 	if from != to:
 		pos[to] = pos[from]
 		pos[from] = '-'
-		
-	remove_pos()
+#	remove_pos()
 	draw_pos(pos)
-
-
-func _input(event):
+#
+#
+func _input(event: InputEvent):
+	if event is InputEventScreenTouch and event.is_pressed():
 	
 	#Mouse in viewport coordinates.
-	if event is InputEventMouseButton:
-		
-		#Получаем гекс на который тыкнули
-		var x1 = event.position.x
-		var y1 = event.position.y
-			
-		var min_len = 99999999
-		var active_hex
-			
-		for hex in range(len(hexes)):
-			var x2 = hexes[hex].global_position.x
-			var y2 = hexes[hex].global_position.y
-			#print(x1, " ", y1," ", x2, " ", y2)
-			var len = sqrt((x2-x1)**2 + (y2-y1)**2)
-				
-			if len < min_len:
-				active_hex = hex
-				min_len = len
-					
-		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			hexes[active_hex].animation = swap_hexes[hexes[active_hex].animation]
-		
-		elif event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			var hex_index = hexes[active_hex].get_meta('index')
-			
-			if figure_selected != -1:
-				var data = get_x_and_y_by_hex_index(hex_index)
-				move_figure(figure_selected, hex_index )
-				figure_selected = -1
-				#draw_figure(data[0], data[1], pos[active_hex], hex_index)
-			elif pos[active_hex] != '-':
-				figure_selected = hex_index
-				field[active_hex].z_index = 1
-				
-			
-				
-		pass
-	
-	if event is InputEventMouseMotion :
-		pass
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	var mouse_position = get_global_mouse_position()
-	#print(figure_selected)
-	if figure_selected != -1:
-		field[figure_selected].global_position = mouse_position
-		
-		
+#	if event is InputEventMouseButton:
+#
+#		#Получаем гекс на который тыкнули
+#		var x1 = event.position.x
+#		var y1 = event.position.y
+#		var min_len = 99999999
+#		var active_hex
+##		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+##			hexes[active_hex].animation = swap_hexes[hexes[active_hex].animation]
+#		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+#			var hex_index = hexes[active_hex].get_meta('index')
+#			if figure_selected != -1:
+#				move_figure(figure_selected, hex_index )
+#				figure_selected = -1
+#			elif pos[active_hex] != '-':
+#				figure_selected = hex_index
+#				field[active_hex].z_index = 1
+#		pass
+#
+#	if event is InputEventMouseMotion :
+#		pass
+## Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	var mouse_position = get_global_mouse_position()
+#	#print(figure_selected)
+#	if figure_selected != -1:
+#		field[figure_selected].global_position = mouse_position
+#
+#
