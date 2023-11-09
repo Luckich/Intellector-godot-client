@@ -92,27 +92,28 @@ func move_figure(from, to):
 	draw_pos(pos)
 #
 #
-func _input(event):
-
+func _input(event: InputEvent):
+	if event is InputEventScreenTouch and event.is_pressed():
+	
 	#Mouse in viewport coordinates.
-	if event is InputEventMouseButton:
-
-		#Получаем гекс на который тыкнули
-		var x1 = event.position.x
-		var y1 = event.position.y
-		var min_len = 99999999
-		var active_hex
-		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-			hexes[active_hex].animation = swap_hexes[hexes[active_hex].animation]
-		elif event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			var hex_index = hexes[active_hex].get_meta('index')
-			if figure_selected != -1:
-				move_figure(figure_selected, hex_index )
-				figure_selected = -1
-			elif pos[active_hex] != '-':
-				figure_selected = hex_index
-				field[active_hex].z_index = 1
-		pass
+#	if event is InputEventMouseButton:
+#
+#		#Получаем гекс на который тыкнули
+#		var x1 = event.position.x
+#		var y1 = event.position.y
+#		var min_len = 99999999
+#		var active_hex
+##		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+##			hexes[active_hex].animation = swap_hexes[hexes[active_hex].animation]
+#		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+#			var hex_index = hexes[active_hex].get_meta('index')
+#			if figure_selected != -1:
+#				move_figure(figure_selected, hex_index )
+#				figure_selected = -1
+#			elif pos[active_hex] != '-':
+#				figure_selected = hex_index
+#				field[active_hex].z_index = 1
+#		pass
 #
 #	if event is InputEventMouseMotion :
 #		pass

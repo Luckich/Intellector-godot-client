@@ -10,15 +10,5 @@ var swap = {"white_idle"   : "white_active",
 func _ready():
 	var color_idle = animation
 	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
 
-func _input(event):
-	# Mouse in viewport coordinates.
-	#if event is InputEventMouseButton:
-	#		print("Mouse Click/Unclick at: ", event.position)
-	pass	
-		
-	#elif event is InputEventMouseMotion:
-	#	print("Mouse Motion at: ", event.position)
+	

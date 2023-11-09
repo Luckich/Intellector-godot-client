@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://cmbqorku5xjxi"]
+[gd_scene load_steps=40 format=3 uid="uid://cmbqorku5xjxi"]
 
 [ext_resource type="Texture2D" uid="uid://b576f2s24s6ve" path="res://icons/figures/ab.png" id="1_bihit"]
 [ext_resource type="Texture2D" uid="uid://ha1jupc1tsen" path="res://icons/figures/aw.png" id="2_01wiq"]
@@ -37,6 +37,7 @@
 [ext_resource type="Texture2D" uid="uid://ca5nl0op2dnm1" path="res://icons/figures/m4.png" id="34_8kgq1"]
 [ext_resource type="Texture2D" uid="uid://b7xloourevhrw" path="res://icons/figures/m2.png" id="35_egedp"]
 [ext_resource type="Texture2D" uid="uid://dkif8v0pm6uxv" path="res://icons/figures/m1.png" id="37_d1or8"]
+[ext_resource type="Script" path="res://scenes/piece.gd" id="38_twohx"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_0y5p3"]
 animations = [{
@@ -338,5 +339,7 @@ animations = [{
 }]
 
 [node name="piece" type="AnimatedSprite2D"]
+position = Vector2(694, 314)
 sprite_frames = SubResource("SpriteFrames_0y5p3")
 animation = &"AR"
+script = ExtResource("38_twohx")
