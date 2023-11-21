@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://crc4qvi01txsr"]
+
+[ext_resource type="PackedScene" uid="uid://4nmagguhdify" path="res://scenes/hex.tscn" id="1_yhf87"]
+
+[node name="AreaHex" type="Area2D"]
+
+[node name="hex" parent="." instance=ExtResource("1_yhf87")]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(232, 329, 421, 642, 778, 642, 954, 339, 770, 11, 408, 15)
+
+[connection signal="input_event" from="." to="hex" method="_on_area_hex_input_event"]

@@ -92,8 +92,8 @@ func move_figure(from, to):
 	draw_pos(pos)
 #
 #
-func _input(event: InputEvent):
-	if event is InputEventScreenTouch and event.is_pressed():
+#func _input(event: InputEvent):
+#	if event is InputEventScreenTouch and event.is_pressed():
 	
 	#Mouse in viewport coordinates.
 #	if event is InputEventMouseButton:
