@@ -12,3 +12,7 @@ func _ready():
 	
 
 	
+
+
+func _on_area_hex_input_event(viewport, event, shape_idx):
+	pass # Replace with function body.
