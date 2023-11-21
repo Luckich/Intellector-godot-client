@@ -16,6 +16,7 @@ var hexes_array = []
 var hex_string = 'btwwbtwbwwbtbwwbwwbtwwbwwbwwbtwbwwbwwbwwbtbwwbwwbwwbwwbteebwwbwwbwwbwwbteeeebwwbwwbwwbwwbteeeeeebwwbwwbwwbwwbteeeeeeeebwwbwwbwwbwteeeeeeeeeebwwbwwbwwteeeeeeeeeeeebwwbwwbteeeeeeeeeeeeeebwwbwteeeeeeeeeeeeeeeebwwteeeeeeeeeeeeeeeeeebt'
 var pos = "BUHS--UFO----UFS------UHBJ-------U-bVGJ-------uhsQEJ-------ufoKEJ-------ufsQGJ-------uhbV-j-------uvgj------qej----kej--qgjv"
 var figure_selected = -1 #-1 значит что никакая фигура не выбрана
+@onready var piece = $piece
 
 
 
@@ -58,6 +59,11 @@ var swap_figures = {"-":"EMPTY",
 					"p":"PB", "P":"PW","u":"PY","U":"PR","j":"PG","J":"PP"}                                     
 #
 #
+func _input(event):
+	if event is InputEventMouseButton and event.is_pressed():
+		piece.move()
+
+
 func draw_figure(figure, num):
 	var piece = piece_scene.instantiate()
 	piece.scale.x = scale_multiplayer*5
@@ -83,13 +89,6 @@ var swap_hexes = {"white_idle"   : "white_active",
 				"white_active" : "white_idle",
 				"black_idle"   : "black_active",
 				"black_active" : "black_idle"}
-#
-func move_figure(from, to):
-	if from != to:
-		pos[to] = pos[from]
-		pos[from] = '-'
-#	remove_pos()
-	draw_pos(pos)
 #
 #
 #func _input(event: InputEvent):
