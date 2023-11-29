@@ -74,10 +74,10 @@ func draw_pos(pos):
 		num += 1
 		draw_figure(figure, num)
 ##
-#func remove_pos():
-#	for figure in field:
-#		remove_child(figure)
-#	field = []
+func remove_pos():
+	for figure in field:
+		remove_child(figure)
+	field = []
 #
 var swap_hexes = {"white_idle"   : "white_active",
 				"white_active" : "white_idle",
@@ -88,40 +88,48 @@ func move_figure(from, to):
 	if from != to:
 		pos[to] = pos[from]
 		pos[from] = '-'
-#	remove_pos()
+	remove_pos()
 	draw_pos(pos)
 #
 #
-#func _input(event: InputEvent):
-#	if event is InputEventScreenTouch and event.is_pressed():
+func _input(event: InputEvent):
 	
+	if true:
+		
 	#Mouse in viewport coordinates.
-#	if event is InputEventMouseButton:
+		if event is InputEventMouseButton:
+	#
+	#		#Получаем гекс на который тыкнули
+			var x1 = event.position.x
+			var y1 = event.position.y
+			var min_len = 99999999
+			var active_hex
+			
+			
+			for hex_index in range(len(hexes_array)):
+				var hex = hexes_array[hex_index]
+				var hex_x = hex.global_position.x
+				var hex_y = hex.global_position.y
+				
+				var len = sqrt((x1-hex_x)**2 + (y1-hex_y)**2)
+				
+				if len < min_len:
+					min_len = len
+					active_hex = hex_index
+			
+
+			if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+				hexes_array[active_hex].animation = swap_hexes[hexes_array[active_hex].animation]
+			if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+	
+				if figure_selected != -1:
+					move_figure(figure_selected, active_hex )
+					figure_selected = -1
+				elif pos[active_hex] != '-':
+					figure_selected = active_hex
+					field[active_hex].z_index = 1
 #
-#		#Получаем гекс на который тыкнули
-#		var x1 = event.position.x
-#		var y1 = event.position.y
-#		var min_len = 99999999
-#		var active_hex
-##		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
-##			hexes[active_hex].animation = swap_hexes[hexes[active_hex].animation]
-#		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-#			var hex_index = hexes[active_hex].get_meta('index')
-#			if figure_selected != -1:
-#				move_figure(figure_selected, hex_index )
-#				figure_selected = -1
-#			elif pos[active_hex] != '-':
-#				figure_selected = hex_index
-#				field[active_hex].z_index = 1
-#		pass
-#
-#	if event is InputEventMouseMotion :
-#		pass
-## Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	var mouse_position = get_global_mouse_position()
-#	#print(figure_selected)
-#	if figure_selected != -1:
-#		field[figure_selected].global_position = mouse_position
-#
-#
+		if event is InputEventMouseMotion :
+			var mouse_position = get_global_mouse_position()
+			if figure_selected != -1:
+				field[figure_selected].global_position = mouse_position
